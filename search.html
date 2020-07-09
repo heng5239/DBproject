@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Olympics</title>
+</head>
+<body>
+    <p > Please input ID (1~135571) </p>
+    <form id="myForm" action="/" method="post" >
+        <input type='number'  name='name'>
+        <button type='submit'>search</button>
+    </form>
+    <br>
+    <br>
+    <table border="1" >
+        <tr>
+            <th width="100">ID</th>
+            <th >Name</th>
+            <th >Sex</th>
+            <th >Age</th>
+            <th >Height</th>
+            <th >Weight</th>
+            <th >Team</th>
+            <th >NOC</th>
+            <th >Games</th>
+            <th >City</th>
+            <th >Sport</th>
+            <th >Event</th>
+            <th >Medal</th>
+        </tr>
+        {% for row in data: %}
+            <tr>
+                <td width="100">{{row[0]}}  </td>
+                <td >{{row[1]}}</td>
+                <td >{{row[2]}}</td>
+                <td >{{row[3]}}</td>
+                <td >{{row[4]}}</td>
+                <td >{{row[5]}}</td>
+                <td >{{row[6]}}</td>
+                <td >{{row[7]}}</td>
+                <td >{{row[8]}}</td>
+                <td >{{row[9]}}</td>
+                <td >{{row[10]}}</td>
+                <td >{{row[11]}}</td>
+                <td >{{row[12]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
