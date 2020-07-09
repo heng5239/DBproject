@@ -4,7 +4,7 @@ from flask import Flask, request, render_template, url_for
 
 
 def connect():
-    conn = sqlite3.connect('dbtmp.db')
+    conn = sqlite3.connect('DBproject.db')
     return conn
 
 
