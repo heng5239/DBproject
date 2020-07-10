@@ -6,9 +6,13 @@
 </head>
 <body>
     <p > Please input ID (1~135571) </p>
-    <form id="myForm" action="/" method="post" >
-        <input type='number'  name='name'>
-        <button type='submit'>search</button>
+    <form id="ID" action="/ID" method="post" >
+        <input type='number'  name='ID'>
+        <button type='submit'>search ID</button>
+    </form>
+    <form id="Name" action="/Name" method="post" >
+        <input type='text'  name='Name'>
+        <button type='submit'>search name</button>
     </form>
     <br>
     <br>
@@ -24,7 +28,6 @@
             <th >NOC</th>
             <th >Games</th>
             <th >City</th>
-            <th >Sport</th>
             <th >Event</th>
             <th >Medal</th>
         </tr>
@@ -42,7 +45,6 @@
                 <td >{{row[9]}}</td>
                 <td >{{row[10]}}</td>
                 <td >{{row[11]}}</td>
-                <td >{{row[12]}}</td>
             </tr>
         {% endfor %}
     </table>
