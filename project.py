@@ -15,27 +15,39 @@ def disconnect(conn):
 app = Flask(__name__)
 
 
-# @app.route('/')
-# def home():
-#     return "HI"
-
 @app.route('/')
 def home():
     return render_template('search.html')
 
 
-@app.route('/', methods=['POST'])
-def submit():
+@app.route('/ID', methods=['POST'])
+def submitid():
     if request.method == 'POST':
         con = connect()
-        a = request.form.get('name')
+        a = request.form.get('ID')
         sql = ""
-        if a != "" and str(int(float(a)))==a and 135571 >= int(float(a)) > 0 :
-            sql = "select athlete_info.ID as ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,City,Sport,Event,Medal from athlete_info,event_info,game_info where athlete_info.ID= " + a+" and athlete_info.ID=event_info.ID and event_info.GameID=game_info.GameID;"
+        if a != "" and str(int(float(a))) == a and 135571 >= int(float(a)) > 0:
+            sql = "select athlete_info2.ID as ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,City,Event,Medal from (" \
+                  "select * from athlete_info where ID= " + a + ")as athlete_info2,(select * from event_info where " \
+                                                                "ID=" + a + ")as event_info2,game_info where  " \
+                                                                            "event_info2.GameID=game_info.GameID; "
+
         cursor = con.execute(sql)
-        lis = []
-        if cursor == lis:
-            return "NOT Found"
+        return render_template('search.html', data=cursor)
+
+
+@app.route('/Name', methods=['POST'])
+def submitname():
+    if request.method == 'POST':
+        con = connect()
+        b = request.form.get('Name')
+        sql = ""
+        if b != "":
+            sql = "select athlete_info2.ID as ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,City,Event,Medal from (" \
+                  "select * from athlete_info where Name= '" + b + "')as athlete_info2,event_info,game_info where " \
+                                                                   "athlete_info2.ID=event_info.ID and " \
+                                                                   "event_info.GameID=game_info.GameID; "
+        cursor = con.execute(sql)
         return render_template('search.html', data=cursor)
 
 
