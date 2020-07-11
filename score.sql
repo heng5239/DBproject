@@ -14,5 +14,4 @@ from  (select NOC,GameID,Medal from event_info where Medal='Bronze')as event_inf
 where event_info2.GameID=game_info2.GameID
 group by NOC)
 group by NOC
-order by score desc
-limit 10;
+order by score desc;
