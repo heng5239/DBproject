@@ -24,16 +24,15 @@ def name_search():
         return render_template('name.html')
     elif request.method == 'POST':
         con = connect()
-        a = request.form.get('name')
+        name = request.form.get('name')
         sql = ""
-        if a != "":
-            sql = "SELECT ID,Name,Sex,Height,Weight FROM athlete_info WHERE Name LIKE '%" + a + "%';"
+        if name != "":
+            sql = "SELECT ID,Name,Sex,Height,Weight FROM athlete_info WHERE Name LIKE '%" + name + "%';"
         cursor = con.execute(sql)
         lis = []
         if cursor == lis:
             return "NOT Found"
         return render_template('name.html', data=cursor)
-
 
 @app.route('/individual_page', methods=['POST'])
 def individual():
@@ -42,13 +41,29 @@ def individual():
         id = request.form.get('ID')
         sql = "SELECT Name,Sex,Height,Weight FROM athlete_info WHERE ID = " + id + ";";
         cursor = con.execute(sql)
-        s = cursor.fetchone()
+        i = cursor.fetchone()
         sql = "SELECT Age,Team,NOC,Games,City,Sport,Event,Medal FROM event_info, game_info WHERE event_info.ID = " + id + " AND event_info.Gameid = game_info.Gameid"
         cursor = con.execute(sql)
         lis = []
         if cursor == lis:
             return "NOT Found"
-        return render_template('individual.html', status = s, data=cursor)
+        return render_template('individual.html', information = i, data=cursor)
+
+@app.route('/team_search', methods=['POST', 'GET'])
+def game_search():
+    con = connect()
+    sql = "SELECT * FROM game_info"
+    game = con.execute(sql)
+    sql = "SELECT DISTINCT team FROM event_info ORDER BY team"
+    team = con.execute(sql)
+    if request.method == 'GET':
+        return render_template('team_search.html', games = game, teams = team)
+    elif request.method == 'POST':
+        gameid = request.form.get('game')
+        team_name = request.form.get('team')
+        sql = "SELECT athlete_info.ID, Name, Sex, Age, Height, Weight, Sport, Event, Medal  FROM event_info, athlete_info WHERE Gameid = " + gameid + " AND Team = '" + team_name + "' AND event_info.ID = athlete_info.ID;"
+        cursor = con.execute(sql)
+        return render_template('team_search.html', games = game, teams = team, data = cursor)
 
 
 if __name__ == '__main__':

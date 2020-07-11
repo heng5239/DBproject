@@ -5,21 +5,33 @@
     <title>Olympics</title>
 </head>
 <h1>Database for Olympics</h1>
-    <p>Athlete Name</p>
-    <form action="/name_search" method="post">
-        <input type='text'  name='name'>
-        <button type='submit'>search</button>
-    </form>
-    <br>
-    <br>
+	<p>Choose game</p>
+	<form action="/team_search" method="post">
+		<select name="game">
+			{% for row in games: %}
+				<option value="{{row[0]}}">{{row[1]}}, {{row[2]}}</option>
+			{% endfor %}
+		</select>
+		<select name="team">
+			{% for row in teams: %}
+				<option value="{{row[0]}}">{{row[0]}}</option>
+			{% endfor %}
+		</select>
+		<input type="submit" name = "search">
+	</form>
+	<br>
+	<br>
 	<table border="1" >
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Sex</th>
+            <th>Age</th>
             <th>Height</th>
             <th>Weight</th>
-			<th>Detail</th> 
+            <th>Sport</th>
+            <th>Event</th>
+            <th>Medal</th>
         </tr>
         {% for row in data: %}
             <tr>
@@ -28,12 +40,10 @@
                 <td>{{row[2]}}</td>
                 <td>{{row[3]}}</td>
                 <td>{{row[4]}}</td>
-                <td>
-					<form action="/individual_page" method="post">
-						<input type='hidden' name='ID' value = {{row[0]}}>
-						<button type='submit'>more</button>
-					</form>
-				</td>
+				<td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[7]}}</td>
+                <td>{{row[8]}}</td>
             </tr>
         {% endfor %}
     </table>

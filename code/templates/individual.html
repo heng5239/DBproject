@@ -4,31 +4,32 @@
     <title>Olympics</title>
 </head>
 <body>
-<h1>{{status[0]}}</h1>
-<p>Sex : {{status[1]}}</p>
-<p>Height : {{status[2]}}</p>
-<p>Weight : {{status[3]}}</p>
+<h1>{{information[0]}}</h1>
+<p>Sex : {{information[1]}}</p>
+<p>Height : {{information[2]}}</p>
+<p>Weight : {{information[3]}}</p>
+<br>
     <table border="1" >
         <tr>
-            <th >Age</th>
-            <th >Team</th>
-            <th >NOC</th>
-            <th >Games</th>
-            <th >City</th>
-            <th >Sport</th>
-            <th >Event</th>
-            <th >Medal</th>
+            <th>Age</th>
+            <th>Team</th>
+            <th>NOC</th>
+            <th>Games</th>
+            <th>City</th>
+            <th>Sport</th>
+            <th>Event</th>
+            <th>Medal</th>
         </tr>
         {% for row in data: %}
             <tr>
-                <td width="100">{{row[0]}}  </td>
-                <td >{{row[1]}}</td>
-                <td >{{row[2]}}</td>
-                <td >{{row[3]}}</td>
-                <td >{{row[4]}}</td>
-                <td >{{row[5]}}</td>
-                <td >{{row[6]}}</td>
-                <td >{{row[7]}}</td>
+                <td>{{row[0]}}  </td>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[7]}}</td>
             </tr>
         {% endfor %}
     </table>
