@@ -17,38 +17,72 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('search.html')
+    return render_template('home.html')
 
 
-@app.route('/ID', methods=['POST'])
-def submitid():
+@app.route('/name_search', methods=['POST', 'GET'])
+def name_search():
+    if request.method == 'GET':
+        return render_template('name.html')
+    elif request.method == 'POST':
+        con = connect()
+        a = request.form.get('name')
+        sql = ""
+        if a != "":
+            sql = "SELECT ID,Name,Sex,Height,Weight FROM athlete_info WHERE Name LIKE '%" + a + "%';"
+        cursor = con.execute(sql)
+        lis = []
+        if cursor == lis:
+            return "NOT Found"
+        return render_template('name.html', data=cursor)
+
+
+@app.route('/individual_page', methods=['POST'])
+def individual():
+
     if request.method == 'POST':
         con = connect()
-        a = request.form.get('ID')
-        sql = ""
-        if a != "" and str(int(float(a))) == a and 135571 >= int(float(a)) > 0:
-            sql = "select athlete_info2.ID as ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,City,Event,Medal from (" \
-                  "select * from athlete_info where ID= " + a + ")as athlete_info2,(select * from event_info where " \
-                                                                "ID=" + a + ")as event_info2,game_info where  " \
-                                                                            "event_info2.GameID=game_info.GameID; "
-
+        id = request.form.get('ID')
+        sql = "SELECT Name,Sex,Height,Weight FROM athlete_info WHERE ID = " + id + ";"
         cursor = con.execute(sql)
-        return render_template('search.html', data=cursor)
+        s = cursor.fetchone()
+        sql = "SELECT Age,Team,NOC,Games,City,Sport,Event,Medal FROM event_info, game_info WHERE event_info.ID = " + id + " AND event_info.Gameid = game_info.Gameid"
+        cursor = con.execute(sql)
+        lis = []
+        if cursor == lis:
+            return "NOT Found"
+        return render_template('individual.html', status=s, data=cursor)
 
 
-@app.route('/Name', methods=['POST'])
-def submitname():
-    if request.method == 'POST':
+@app.route('/score_search', methods=['POST', 'GET'])
+def score_search():
+    if request.method == 'GET':
+        return render_template('score.html')
+    elif request.method == 'POST':
         con = connect()
-        b = request.form.get('Name')
+        a = request.form.get('Games')
         sql = ""
-        if b != "":
-            sql = "select athlete_info2.ID as ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,City,Event,Medal from (" \
-                  "select * from athlete_info where Name= '" + b + "')as athlete_info2,event_info,game_info where " \
-                                                                   "athlete_info2.ID=event_info.ID and " \
-                                                                   "event_info.GameID=game_info.GameID; "
+        if a != "":
+            sql = "select NOC,sum(Gold) as Gold,sum(Silver) as Silver,sum(Bronze) as Bronze,sum(pt)as score from(" \
+                  "select NOC,count(*)  as Gold,0 as Silver,0 as Bronze,3*count(*) as pt from  (select NOC,GameID," \
+                  "Medal from event_info where Medal='Gold')as event_info2,(select GameID from game_info where " \
+                  "Games='"+a+"' )as game_info2 where event_info2.GameID=game_info2.GameID group by NOC union select " \
+                              "NOC,0 as Gold,count(*) as Silver,0 as Bronze,2*count(*) as pt from  (select NOC," \
+                              "GameID,Medal from event_info where Medal='Silver')as event_info2,(select GameID from " \
+                              "game_info where Games='"+a+"' )as game_info2 where " \
+                                                          "event_info2.GameID=game_info2.GameID group by NOC union " \
+                                                          "select NOC,0 as Gold,0 as Silver,count(*) as Bronze," \
+                                                          "count(*) as pt from  (select NOC,GameID,Medal from " \
+                                                          "event_info where Medal='Bronze')as event_info2," \
+                                                          "(select GameID from game_info where Games='"+a+"' )as " \
+                                                                                                          "game_info2 " \
+                                                                                                          "where " \
+                                                                                                          "event_info2.GameID=game_info2.GameID group by NOC) group by NOC order by score desc; "
         cursor = con.execute(sql)
-        return render_template('search.html', data=cursor)
+        lis = []
+        if cursor == lis:
+            return "NOT Found"
+        return render_template('score.html', data=cursor)
 
 
 if __name__ == '__main__':
