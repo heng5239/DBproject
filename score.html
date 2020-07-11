@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Olympics</title>
+</head>
+<h1>Database for Olympics</h1>
+    <p>Games</p>
+    <form action="/score_search" method="post">
+        <input type='text'  name='Games'>
+        <button type='submit'>search</button>
+    </form>
+    <br>
+    <br>
+	<table border="1" >
+        <tr>
+            <th>NOC</th>
+            <th>Gold</th>
+            <th>Silver</th>
+            <th>Bronze</th>
+            <th>score</th>
+        </tr>
+        {% for row in data: %}
+            <tr>
+                <td width="100">{{row[0]}}  </td>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+	<br>
+	<form action="/">
+		<input type="submit" value="back">
+	</form>
+</html>
