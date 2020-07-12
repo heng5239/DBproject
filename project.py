@@ -59,11 +59,11 @@ def game_search():
     con = connect()
     sql = "SELECT * FROM game_info"
     game = con.execute(sql)
-    sql = "SELECT DISTINCT Team FROM event_info ORDER BY Team"
+    sql = "SELECT DISTINCT team FROM event_info ORDER BY team"
     team = con.execute(sql)
     if request.method == 'GET':
         return render_template('team_search.html', games=game, teams=team)
-    if request.method == 'POST':
+    elif request.method == 'POST':
         gameid = request.form.get('game')
         team_name = request.form.get('team')
         sql = "SELECT athlete_info.ID, Name, Sex, Age, Height, Weight, Sport, Event, Medal  FROM event_info, " \
@@ -110,6 +110,25 @@ def score_search():
                                                                                              "score DESC; "
         cursor = con.execute(sql)
         return render_template('score.html', data=cursor)
+
+
+@app.route('/bio_data', methods=['POST', 'GET'])
+def bio_data_search():
+    if request.method == 'GET':
+        return render_template('bio_data.html')
+    elif request.method == 'POST':
+        con = connect()
+        a = request.form.get('Games')
+        sql = ""
+        if a != "":
+            sql = "SELECT Sport,Sex,round(AVG(CAST(Height AS REAL)),2)AS AVGHeight,round(AVG(CAST(Weight AS REAL))," \
+                  "2)AS AVGWeight FROM  (SELECT DISTINCT ID,Sport FROM " \
+                  "event_info WHERE Medal!='NA')AS event_info2,athlete_info,game_info WHERE  " \
+                  "event_info2.ID=athlete_info.ID AND athlete_info.Height!='NA' AND athlete_info.Weight!='NA' AND " \
+                  "Games='" + a + "' GROUP BY Sport,Sex ORDER BY AVGHeight DESC; "
+
+        cursor = con.execute(sql)
+        return render_template('bio_data.html', data=cursor)
 
 
 if __name__ == '__main__':
