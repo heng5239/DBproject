@@ -75,10 +75,10 @@ def game_search():
 
 @app.route('/score_search', methods=['POST', 'GET'])
 def score_search():
+    con = connect()
     if request.method == 'GET':
         return render_template('score.html')
     elif request.method == 'POST':
-        con = connect()
         a = request.form.get('Games')
         sql = ""
         if a != "":
@@ -114,21 +114,21 @@ def score_search():
 
 @app.route('/bio_data', methods=['POST', 'GET'])
 def bio_data_search():
+    con = connect()
+    sql = "SELECT * FROM game_info"
+    game = con.execute(sql)
     if request.method == 'GET':
-        return render_template('bio_data.html')
+        return render_template('bio_data.html',games=game)
     elif request.method == 'POST':
-        con = connect()
-        a = request.form.get('Games')
-        sql = ""
-        if a != "":
-            sql = "SELECT Sport,Sex,round(AVG(CAST(Height AS REAL)),2)AS AVGHeight,round(AVG(CAST(Weight AS REAL))," \
-                  "2)AS AVGWeight FROM  (SELECT DISTINCT ID,Sport FROM " \
-                  "event_info WHERE Medal!='NA')AS event_info2,athlete_info,game_info WHERE  " \
-                  "event_info2.ID=athlete_info.ID AND athlete_info.Height!='NA' AND athlete_info.Weight!='NA' AND " \
-                  "Games='" + a + "' GROUP BY Sport,Sex ORDER BY AVGHeight DESC; "
+        gameid = request.form.get('game')
+        sql = "SELECT Sport,Sex,round(AVG(CAST(Height AS REAL)),2)AS AVGHeight,round(AVG(CAST(Weight AS REAL))," \
+              "2)AS AVGWeight FROM  (SELECT DISTINCT ID,Sport FROM event_info WHERE Medal!='NA' AND Gameid = " + \
+              gameid + ")AS event_info2,athlete_info WHERE  event_info2.ID=athlete_info.ID AND " \
+                       "athlete_info.Height!='NA' AND athlete_info.Weight!='NA'  GROUP BY Sport,Sex ORDER BY " \
+                       "AVGHeight DESC; "
 
         cursor = con.execute(sql)
-        return render_template('bio_data.html', data=cursor)
+        return render_template('bio_data.html',games=game, data=cursor)
 
 
 if __name__ == '__main__':
