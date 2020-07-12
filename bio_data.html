@@ -5,13 +5,17 @@
     <title>Olympics</title>
 </head>
 <h1>Database for Olympics</h1>
-    <p>Games</p>
-    <form action="/bio_data" method="post">
-        <input type='text'  name='Games'>
-        <button type='submit'>search</button>
-    </form>
-    <br>
-    <br>
+	<p>Choose game</p>
+	<form action="/bio_data" method="post">
+		<select name="game">
+			{% for row in games: %}
+				<option value="{{row[0]}}">{{row[1]}}, {{row[2]}}</option>
+			{% endfor %}
+		</select>
+		<input type="submit" name = "search">
+	</form>
+	<br>
+	<br>
 	<table border="1" >
         <tr>
             <th>Sport</th>
@@ -21,7 +25,7 @@
         </tr>
         {% for row in data: %}
             <tr>
-                <td width="100">{{row[0]}}  </td>
+                <td>{{row[0]}}</td>
                 <td>{{row[1]}}</td>
                 <td>{{row[2]}}</td>
                 <td>{{row[3]}}</td>
