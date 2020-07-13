@@ -4,7 +4,7 @@ from flask import Flask, request, render_template
 
 
 def connect():
-    conn = sqlite3.connect('DBproject.db')
+    conn = sqlite3.connect('..\database\DBproject.db')
     return conn
 
 
@@ -45,8 +45,10 @@ def individual():
         sql = "SELECT Name,Sex,Height,Weight FROM athlete_info WHERE ID = " + id + ";"
         cursor = con.execute(sql)
         i = cursor.fetchone()
-        sql = "SELECT Age,Team,NOC,Games,City,Sport,Event,Medal FROM event_info, game_info WHERE event_info.ID = " \
-              + id + " AND event_info.Gameid = game_info.Gameid"
+        sql = "SELECT Age,Team,NOC,Games,City,Sport,event_info.Event,Medal FROM event_info, game_info, sport_info " \
+              "WHERE event_info.ID = "+id+" AND event_info.Gameid = game_info.Gameid AND sport_info.Event " \
+                                          "=event_info.Event; "
+
         cursor = con.execute(sql)
         lis = []
         if cursor == lis:
@@ -66,9 +68,9 @@ def game_search():
     elif request.method == 'POST':
         gameid = request.form.get('game')
         team_name = request.form.get('team')
-        sql = "SELECT athlete_info.ID, Name, Sex, Age, Height, Weight, Sport, Event, Medal  FROM event_info, " \
-              "athlete_info WHERE Gameid = " + gameid + " AND Team = '" + team_name + "' AND event_info.ID = " \
-                                                                                      "athlete_info.ID; "
+        sql = "SELECT athlete_info.ID, Name, Sex, Age, Height, Weight, Sport, event_info.Event, Medal FROM " \
+              "event_info, athlete_info,sport_info WHERE event_info.Event = sport_info.Event AND Gameid = "+gameid+" AND Team = '"+team_name+"' AND event_info.ID = athlete_info.ID; "
+
         cursor = con.execute(sql)
         return render_template('team_search.html', games=game, teams=team, data=cursor)
 
@@ -118,17 +120,18 @@ def bio_data_search():
     sql = "SELECT * FROM game_info"
     game = con.execute(sql)
     if request.method == 'GET':
-        return render_template('bio_data.html',games=game)
+        return render_template('bio_data.html', games=game)
     elif request.method == 'POST':
         gameid = request.form.get('game')
         sql = "SELECT Sport,Sex,round(AVG(CAST(Height AS REAL)),2)AS AVGHeight,round(AVG(CAST(Weight AS REAL))," \
-              "2)AS AVGWeight FROM  (SELECT DISTINCT ID,Sport FROM event_info WHERE Medal!='NA' AND Gameid = " + \
+              "2)AS AVGWeight FROM  (SELECT DISTINCT ID,Sport FROM event_info, sport_info WHERE sport_info.Event = " \
+              "event_info.Event AND Medal!='NA' AND Gameid = " + \
               gameid + ")AS event_info2,athlete_info WHERE  event_info2.ID=athlete_info.ID AND " \
                        "athlete_info.Height!='NA' AND athlete_info.Weight!='NA'  GROUP BY Sport,Sex ORDER BY " \
                        "AVGHeight DESC; "
 
         cursor = con.execute(sql)
-        return render_template('bio_data.html',games=game, data=cursor)
+        return render_template('bio_data.html', games=game, data=cursor)
 
 
 if __name__ == '__main__':
