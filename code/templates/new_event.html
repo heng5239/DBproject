@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Olympics</title>
+</head>
+<h1>Insert New Event into Database</h1>
+<h2>{{comment}}</h2>
+    <form action="/new_event" method="post">
+		<p>Game</p>
+		<select name="game">
+			{% for row in games: %}
+				<option value="{{row[0]}}">{{row[1]}}</option>
+			{% endfor %}
+		</select>
+		<p>Athlete ID*</p>
+        <input type='text' name='id'>
+		<br>
+		<p>Age</p>
+        <input type='text' name='age'>
+		<br>
+		<p>Team*</p>
+        <input type='text' name='team'>
+		<br>
+		<p>NOC*</p>
+        <input type='text' name='noc'>
+		<br>
+		<p>Sport*</p>
+        <input type='text' name='sport'>
+		<br>
+		<p>Event*</p>
+        <input type='text' name='event'>
+		<br>
+		<p>Medal</p>
+        <input type='text' name='medal'>
+		<br>
+		<br>
+		<button type='submit'>Insert</button>
+    </form>
+	<br>
+	<form action="/insert">
+		<input type="submit" value="back">
+	</form>

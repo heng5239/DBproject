@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Olympics</title>
+</head>
+<h1>Insert New Athlete into Database</h1>
+<h2>{{comment}}</h2>
+    <form action="/new_athlete" method="post">
+		<p>Athlete Name*</p>
+        <input type='text' name='name'>
+		<br>
+		<p>Sex*</p>
+        <input type='text' name='sex'>
+		<br>
+		<p>Height</p>
+        <input type='text' name='height'>
+		<br>
+		<p>Weight</p>
+        <input type='text' name='weight'>
+		<br>
+		<br>
+		<button type='submit'>Insert</button>
+    </form>
+	<br>
+	<form action="/insert">
+		<input type="submit" value="back">
+	</form>

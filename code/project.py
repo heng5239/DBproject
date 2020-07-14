@@ -65,6 +65,90 @@ def game_search():
         cursor = con.execute(sql)
         return render_template('team_search.html', games = game, teams = team, data = cursor)
 
+@app.route('/insert')
+def insert():
+    return render_template('insert.html')
 
+@app.route('/new_athlete', methods=['POST', 'GET'])
+def new_athlete():
+    if request.method == 'GET':
+        return render_template('new_athlete.html', comment = '')
+    elif request.method == 'POST':
+        name = request.form.get('name')
+        sex = request.form.get('sex')
+        height = request.form.get('height')
+        weight = request.form.get('weight')
+        if name == '':
+            comment = 'Name cannot be empty'
+        elif sex != 'M' and sex != 'F':
+            comment = 'Sex should be "M" or "F"'
+        else:
+            if height == '':
+                height = 'NA'
+            if weight == '':
+                weight = 'NA'
+            con = connect()
+            sql = "SELECT MAX(ID) FROM athlete_info"
+            cursor = con.execute(sql)
+            row = cursor.fetchone()
+            id = row[0] + 1
+            sql = "INSERT INTO athlete_info (ID, Name, Sex, Height, Weight) VALUES ( " + str(id) + ", '" + name + "', '" + sex + "', '" + height + "' ,'" + weight + "');"
+            con.execute(sql)
+            con.commit()
+            comment = 'Successfully'
+        return render_template('new_athlete.html', comment = comment)
+
+@app.route('/new_game', methods=['POST', 'GET'])
+def new_game():
+    if request.method == 'GET':
+        return render_template('new_game.html', comment = '')
+    elif request.method == 'POST':
+        game = request.form.get('game')
+        city = request.form.get('city')
+        if game == '':
+            comment = 'Game cannot be empty'
+        elif city == '':
+            comment = 'City cannot be empty'
+        else:
+            con = connect()
+            sql = "INSERT INTO game_info (Games, City) VALUES ('" + game + "', '" + city + "');"
+            con.execute(sql)
+            con.commit()
+            comment = 'Successfully'
+        return render_template('new_game.html', comment = comment)
+
+@app.route('/new_event', methods=['POST', 'GET'])
+def new_event():
+    con = connect()
+    sql = "SELECT Gameid, Games FROM game_info"
+    games = con.execute(sql)
+    if request.method == 'GET':
+        return render_template('new_event.html', comment = '', games = games)
+    elif request.method == 'POST':
+        game = request.form.get('game')
+        id = request.form.get('id')
+        age = request.form.get('age')
+        team = request.form.get('team')
+        noc = request.form.get('noc')
+        sport = request.form.get('sport')
+        event = request.form.get('event')
+        medal = request.form.get('medal')
+        if id == '' or team =='' or noc == '' or sport == '' or event == '':
+            comment = 'Some columns are empty '
+        else:
+            sql = "SELECT * FROM athlete_info WHERE ID = " + id + ";"
+            cursor = con.execute(sql)
+            if cursor == []:
+                comment = "Athlete doesn't exist"
+            else:
+                if medal == '':
+                    medal = 'NA'
+                if age == '':
+                    age = 'NA'
+                sql = "INSERT INTO event_info VALUES (" + id + ", '" + age + "', '" + team + "', '" + noc + "', " + game + ", '" + sport + "', '" + event + "', '" + medal + "');"
+                con.execute(sql)
+                con.commit()
+                comment = 'Successfully'
+        return render_template('new_event.html', comment = comment, games = games)
 if __name__ == '__main__':
     app.run()
