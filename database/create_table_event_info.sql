@@ -1,5 +1,6 @@
 .mode csv
 create table event_info(
+    eventid INTEGER primary key,
     ID INTEGER ,
     Age TEXT,
     Team TEXT,
