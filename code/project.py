@@ -4,7 +4,7 @@ from flask import Flask, request, render_template
 
 
 def connect():
-    conn = sqlite3.connect('DBproject3.db')
+    conn = sqlite3.connect('DBproject_new.db')
     return conn
 
 
@@ -69,8 +69,7 @@ def game_search():
         gameid = request.form.get('game')
         team_name = request.form.get('team')
         sql = "SELECT athlete_info.ID, Name, Sex, Age, Height, Weight, Sport, event_info.Event, Medal FROM " \
-              "event_info, athlete_info,sport_info WHERE event_info.Event = sport_info.Event AND Gameid = " + gameid + "AND Team = \"" + team_name + "\" AND event_info.ID = athlete_info.ID; "
-
+              "event_info, athlete_info,sport_info WHERE event_info.Event = sport_info.Event AND Gameid = "+gameid+" AND Team = \"" + team_name + "\" AND event_info.ID = athlete_info.ID; "
         cursor = con.execute(sql)
         return render_template('team_search.html', games=game, teams=team, data=cursor)
 
