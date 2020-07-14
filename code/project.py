@@ -28,7 +28,7 @@ def name_search():
         con = connect()
         name = request.form.get('name')
         sql = ""
-        if name != "":
+        if name != "" and '"' not in name :
             sql = "SELECT ID,Name,Sex,Height,Weight FROM athlete_info WHERE Name LIKE \"%" + name + "%\";"
         cursor = con.execute(sql)
         lis = []
