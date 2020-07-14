@@ -28,7 +28,7 @@ def name_search():
         con = connect()
         name = request.form.get('name')
         sql = ""
-        if name != "" and '"' not in name :
+        if name != "" and '"' not in name:
             sql = "SELECT ID,Name,Sex,Height,Weight FROM athlete_info WHERE Name LIKE \"%" + name + "%\";"
         cursor = con.execute(sql)
         lis = []
@@ -69,7 +69,7 @@ def game_search():
         gameid = request.form.get('game')
         team_name = request.form.get('team')
         sql = "SELECT athlete_info.ID, Name, Sex, Age, Height, Weight, Sport, event_info.Event, Medal FROM " \
-              "event_info, athlete_info,sport_info WHERE event_info.Event = sport_info.Event AND Gameid = "+gameid+" AND Team = \"" + team_name + "\" AND event_info.ID = athlete_info.ID; "
+              "event_info, athlete_info,sport_info WHERE event_info.Event = sport_info.Event AND Gameid = " + gameid + " AND Team = \"" + team_name + "\" AND event_info.ID = athlete_info.ID; "
         cursor = con.execute(sql)
         return render_template('team_search.html', games=game, teams=team, data=cursor)
 
@@ -188,13 +188,11 @@ def new_event():
             if not cursor:
                 comment = "Athlete doesn't exist"
             else:
-                if medal == '':
-                    medal = 'NA'
-                if age == '':
-                    age = 'NA'
-                sql = "INSERT INTO event_info VALUES (" + id + ", \"" + age + "\", \"" + team + "\", \"" + noc + "\", " \
-                                                                                                                 "\"" \
-                      + game + "\", \"" + event + "\", \"" + medal + "\"); "
+                sql = "SELECT MAX(eventid) FROM event_info"
+                cursor = con.execute(sql)
+                row = cursor.fetchone()
+                eventid = row[0] + 1
+                sql = "INSERT INTO event_info VALUES (" + str(eventid) + ", " + id + ", \"" + age + "\", \"" + team + "\", \"" + noc + "\", " + game + ", \"" + event + "\", \"" + medal + "\"); "
                 con.execute(sql)
                 con.commit()
                 sql = "SELECT COUNT(*) FROM sport_info WHERE Event=\"" + event + "\" AND Sport=\"" + sport + "\" ;"
