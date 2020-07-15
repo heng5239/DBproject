@@ -131,6 +131,8 @@ def new_game():
             comment = 'Year should be an integer'
         elif game[5:11] != 'Summer' and game[5:11] != 'Winter':
             comment = 'Season should be Summer or Winter'
+        elif game[5]!=' ':
+            comment = 'There is a \' \' between Year and Season.'
         elif int(game[0:4]) <= 2019:
             comment = 'Year should greater than 2019'
         elif city == '':
@@ -173,9 +175,9 @@ def new_event():
         elif int(id) < 1 or int(id) > maxid:
             comment = "ID should be an integer between 1 and " + str(maxid) + "."
         elif not age.isdigit():
-            comment = "Age should be an positive integer."
+            comment = "Age should be a positive integer."
         elif int(age) <= 0:
-            comment = "Age should be an positive integer."
+            comment = "Age should be a positive integer."
         elif event[0:len(sport)] != sport:
             comment = "IF your sport is " + sport + ", your event should be '" + sport + "%'."
         elif not noc.isalpha() or len(noc) != 3:
