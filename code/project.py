@@ -96,11 +96,11 @@ def new_athlete():
             comment = 'Sex should be "M" or "F"'
         elif not height.isdigit() and height != 'NA':
             comment = 'Height should be a positive integer or "NA"'
-        elif int(height) == 0:
+        elif height != 'NA' and int(height) == 0:
             comment = 'Height should be a positive integer or "NA"'
         elif not weight.isdigit() and weight != 'NA':
             comment = 'Weight should be a positive integer or "NA"'
-        elif int(weight) == 0:
+        elif weight != 'NA' and int(weight) == 0:
             comment = 'Weight should be a positive integer or "NA"'
         else:
             con = connect()
@@ -128,10 +128,10 @@ def new_game():
         elif len(game) != 11:
             comment = 'Game should be "XXXX Winter" or "XXXX Summer"'
         elif not game[0:4].isdigit():
-            comment = 'Year should be an integer'
+            comment = 'Year should be a positive integer'
         elif game[5:11] != 'Summer' and game[5:11] != 'Winter':
             comment = 'Season should be Summer or Winter'
-        elif game[5]!=' ':
+        elif game[4] != ' ':
             comment = 'There is a \' \' between Year and Season.'
         elif int(game[0:4]) <= 2019:
             comment = 'Year should greater than 2019'
@@ -168,7 +168,7 @@ def new_event():
         cursor = con.execute(sql)
         row = cursor.fetchone()
         maxid = row[0]
-        if id == '' or team == '' or noc == '' or sport == '' or event == '':
+        if id == '' or age == '' or team == '' or noc == '' or sport == '' or event == '' or medal == '':
             comment = 'Some columns are empty '
         elif not id.isdigit():
             comment = "ID should be an integer between 1 and " + str(maxid) + "."
@@ -179,7 +179,7 @@ def new_event():
         elif int(age) <= 0:
             comment = "Age should be a positive integer."
         elif event[0:len(sport)] != sport:
-            comment = "IF your sport is " + sport + ", your event should be '" + sport + "%'."
+            comment = "If your sport is " + sport + ", your event should be '" + sport + "%'."
         elif not noc.isalpha() or len(noc) != 3:
             comment = 'NOC should be 3-letter code.'
         elif medal != 'Gold' and medal != 'Silver' and medal != 'Bronze' and medal != 'NA':
@@ -194,7 +194,8 @@ def new_event():
                 cursor = con.execute(sql)
                 row = cursor.fetchone()
                 eventid = row[0] + 1
-                sql = "INSERT INTO event_info VALUES (" + str(eventid) + ", " + id + ", \"" + age + "\", \"" + team + "\", \"" + noc + "\", " + game + ", \"" + event + "\", \"" + medal + "\"); "
+                sql = "INSERT INTO event_info VALUES (" + str(
+                    eventid) + ", " + id + ", \"" + age + "\", \"" + team + "\", \"" + noc + "\", " + game + ", \"" + event + "\", \"" + medal + "\"); "
                 con.execute(sql)
                 con.commit()
                 sql = "SELECT COUNT(*) FROM sport_info WHERE Event=\"" + event + "\" AND Sport=\"" + sport + "\" ;"
